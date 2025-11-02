@@ -1,0 +1,1 @@
+savedcmd_/home/andjelas/purv/5_zadatak/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/andjelas/purv/5_zadatak/Module.symvers -T /home/andjelas/purv/5_zadatak/modules.order -i Module.symvers -e 
