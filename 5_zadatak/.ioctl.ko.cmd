@@ -1,1 +1,0 @@
-savedcmd_/home/andjelas/purv/5_zadatak/ioctl.ko := arm-linux-gnueabihf-ld -r -EL -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T arch/arm/module.lds -o /home/andjelas/purv/5_zadatak/ioctl.ko /home/andjelas/purv/5_zadatak/ioctl.o /home/andjelas/purv/5_zadatak/ioctl.mod.o /home/andjelas/purv/5_zadatak/.module-common.o
