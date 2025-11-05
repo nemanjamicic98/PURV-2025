@@ -1,0 +1,19 @@
+#CC = arm-linux-gnueabihf-gcc
+# kompajliram direktno na Raspberry Pi:
+CC = gcc
+
+CFLAGS = -Wall -O2
+LIBS = 
+
+TARGET = Conway
+
+all: $(TARGET)
+
+$(TARGET): Conway.o
+	$(CC) -o $(TARGET) Conway.o $(LIBS)
+
+Conway.o: Conway.c
+	$(CC) -c Conway.c $(CFLAGS)
+
+clean:
+	rm -f $(TARGET) Conway.o

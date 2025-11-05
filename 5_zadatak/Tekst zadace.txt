@@ -1,0 +1,2 @@
+Napraviti na osnovu funkcije iz prošlih vježbi IOCTL rukovaoc koji u kontekstu Igre Života izračunava da li je ćelija živa.
+Rukovaoc omogućuje upisivanje statusa svih 9 ćelija i omogućuje čitanje novog statusa ćelije na osnovu upisanih statusa.Rukovaoc treba da prepozna situaciju u kojoj je zahtijevano čitanje, ali nije upisano ništa. 
