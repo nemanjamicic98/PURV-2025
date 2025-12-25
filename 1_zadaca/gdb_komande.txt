@@ -1,0 +1,113 @@
+gdb -q sigseg
+(gdb) run
+
+//Odgovor koji sam dobila jasno pokazuje na kojoj liniji koda se nalazi greska, a to je 41
+Program received signal SIGSEGV, Segmentation fault.
+main () at sigseg11.c:41
+41           *(poruka+2) = 'x';
+
+//bez obzira na to zeljela sam i sama da se uvjerim, pa slijede komande koje sam koristila
+(gdb) break 25 
+Breakpoint 1 at 0x555555555157: file sigseg11.c, line 28.
+(gdb) run
+
+//jasno izvrsava do prvog breakponit-era 
+
+Breakpoint 1, add_numbers (n1=1, n2=2) at sigseg11.c:28
+28           int sum=n1+n2;
+
+(gdb) disas /s
+//dio naredbe jasno pkayuje gdje je zaustavna tacka
+28           int sum=n1+n2;
+=> 0x0000555555555157 <+14>:    mov    -0x14(%rbp),%edx
+
+//postavljanje druge zaustavne tacke na lini 40
+(gdb) b 40
+Breakpoint 2 at 0x55555555518c: file sigseg11.c, line 40.
+(gdb) run
+//takodje uzvsava do drugog breaka
+Breakpoint 2, main () at sigseg11.c:40
+40           suma=add_numbers(n1,n2);
+
+//ako bi sad uradili disas /s vidjeli bi sledece da se zaustavna tacka yaista sad na lini 40
+
+//zelim da vidim vrijednosti u registrima esi, edi, eax
+
+(gdb) display $edi
+1: $edi = 1
+(gdb) display $esi
+2: $esi = -8520
+(gdb) display $eax
+3: $eax = 1431658500
+
+//ako nastavimo dalje izvrsavanje do druge zaustavne tacke 
+(gdb) c
+Continuing.
+
+Breakpoint 1, add_numbers (n1=1, n2=2) at sigseg11.c:28
+28           int sum=n1+n2;
+1: $edi = 1
+2: $esi = 2
+3: $eax = 1
+
+(gdb) c
+Continuing.
+
+Breakpoint 3, main () at sigseg11.c:41
+41           *(poruka+2) = 'x';
+1: $edi = 1
+2: $esi = 2
+3: $eax = 3
+
+
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+main () at sigseg11.c:41
+41           *(poruka+2) = 'x';
+1: $edi = 1
+2: $esi = 2
+3: $eax = 1431658502
+//nece preci na sledecu liniju, koristim step, ili next
+(gdb) next 
+//ili da stavim, nece preci na sledeci segment
+(gdb) c
+ 
+
+//znaci je greska u lini koda 41 *(poruka+2) = 'x'; jer ne izvrsava do kraja program
+//nema prelaksa sa rbp u rax
+
+//jer je poruka definisana kao pokazivac na konstantni string : char *poruka = "Suma brojeva 1 i 2 je";
+//string je read-only, samo ya citanj (pripada tekst segmentu),kada pokusamo da promijenimo teci ynak  tj. 'm' u Suma na 'x' program puca jer se string literal nalazi u text moriskom segmentu koji je read-only.
+
+ size sigseg
+   text    data     bss     dec     hex filename
+   1542     600       8    2150     866 sigseg
+
+//kada se zakomentarise sporna linija koda 41 // *(poruka+2) = 'x';
+//i kompajliram i ponovo pokrenem kod doista radi ispravno
+
+gcc -g sigseg11.c -o sigsg_bez_promene_poruka
+gdb -q sigsg_bez_promene_poruka
+Reading symbols from sigsg_bez_promene_poruka...
+(gdb) run
+
+Suma brojeva 1 i 2 je 3
+[Inferior 1 (process 966) exited normally]
+
+size sigsg_bez_promene_poruka
+   text    data     bss     dec     hex filename
+   1531     600       8    2139     85b sigsg_bez_promene_poruka
+
+
+//ukoliko zelimo ipak da promijenimo 3 znak sa m na x onda to moyemo uraditi kao sto ce mo u kodu napisati 
+//char poruka[]= "Suma brojeva 1 i 2 je";
+//u tom slucaju program ce se opet normalno go kraja izvrsiti jer kada definisemo string kao niy karaktera on se nesmijesta u text segment u memoriji vec se smijesta u data segment (segment podataka ili u .data ili u .bss)
+
+size sigseg_poruka_niz
+   text    data     bss     dec     hex filename
+   1704     608       8    2320     910 sigseg_poruka_niz
+ 
+
+

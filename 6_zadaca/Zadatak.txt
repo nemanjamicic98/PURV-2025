@@ -1,0 +1,9 @@
+Proširiti prethodni zadatak na način da se podaci o ćelijama čuvaju karakternom rukovaocu, nalik na do sada prikazane rukovaoce. Osim toga, rukovaoc posjeduje sljedeću statistiku:
+-- Ukupan broj živih ćelija
+-- Broj ćelija koji se rodio (bile su mrtve pa promijenile stanje u žive)
+-- Broj ćelija koji je umro
+-- Broj generacija (odnosno broj iteracija od početka Igre Života)
+Kanal preko kojeg će se doći do ovih podataka je:
+-- IOCTL -> ja sam radila sa ovim
+-- procfs
+-- Sysfs
